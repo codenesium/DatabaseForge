@@ -6,6 +6,8 @@ To use the DatabaseForge run the DatabaseForgeApp project in the solution.
 
 To use the database contracts nuget package in your project.
 ```
+Install-Package Codenesium.DatabaseContracts
+
 IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory("MSSQL");
 sqlInterface.SetConnectionString(connectToDatabase.ConnectionString);
 DatabaseContainer databaseContainer = sqlInterface.GetDatabaseStructure();
