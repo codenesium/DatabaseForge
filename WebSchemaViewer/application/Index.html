@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Schema Viewer</title>
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+<style>
+    p {
+        margin:0;
+    }
+
+    .primary-key-icon{
+        color:gold;
+    }
+    .foreign-key-icon{
+        color:grey;
+    }
+
+    .foreign-key-container { /* needed to make react-bootstrap overlay display at the right possition */
+        position:relative;
+    }
+
+    .primary-key-container { /* needed to make react-bootstrap overlay display at the right possition */
+        position:relative;
+    }
+    
+    .main-panel{
+        margin-top:50px;
+    }
+
+    .popover{
+        max-width: 500px;
+    }
+</style>
+</head>
+
+
+<body>
+
+    <div class="container">
+        <div id="menu"></div>
+    </div>
+
+    <div class="container" style="height:100%">
+        <div id="app"></div>
+    </div>
+
+    <script>
+        let exports = {};//This fixes a typescript bug where exports isn't defined
+    </script>
+    <script src="./scripts/build/EditorApp.min.js"></script>
+</body>
+</html>
