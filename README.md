@@ -5,9 +5,10 @@ DatabaseForge is windows app and libraries to load and manipulate SQL Server dat
 To use the DatabaseForge run the DatabaseForgeApp project in the solution.
 
 To use the database contracts nuget package in your project.
-`IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory("MSSQL");
+```
+IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory("MSSQL");
 sqlInterface.SetConnectionString(connectToDatabase.ConnectionString);
 DatabaseContainer databaseContainer = sqlInterface.GetDatabaseStructure();
-`
+```
 
 [![NuGet Badge](https://buildstats.info/nuget/Codenesium.DatabaseContracts)](https://www.nuget.org/packages/Codenesium.DatabaseContracts/)
