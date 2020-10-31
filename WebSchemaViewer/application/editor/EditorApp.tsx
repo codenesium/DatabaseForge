@@ -244,6 +244,10 @@ class FormDatabaseEditor extends React.Component<IFormEditorProps,IFormEditorSta
                 let constraints: JSX.Element[] = [];
                 let primaryKey = Models.GetPrimaryKeyConstraint(table);
 
+                if(primaryKey == null)
+                {
+                  return;
+                }
                 let foreignKeysToPrimaryKey = Models.GetForeignKeysForColumn(this.props.database,schema.Name,table.Name,primaryKey.Columns[0].Name);
              
                 let sortedColumns = Array<Models.ColumnModel>();

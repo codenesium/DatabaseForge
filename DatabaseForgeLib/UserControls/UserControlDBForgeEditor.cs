@@ -29,12 +29,13 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         public EventHandler<SchemaEditingCompleteEventArgs> SchemaEditingCompleted;
         private DatabaseContainer _database;
         private ForgeSettings _settings;
+
         public UserControlDBForgeEditor(ForgeSettings settings, DatabaseContainer database)
         {
             this._settings = settings;
             if (database == null)
             {
-                this._database = new DatabaseContainer("",DatabaseContainer.DatabaseTypeMSSQL);
+                this._database = new DatabaseContainer("", DatabaseContainer.DatabaseTypeMSSQL);
             }
             else
             {
@@ -80,13 +81,11 @@ namespace Codenesium.DatabaseForgeLib.UserControls
                     this.tableSelectionChanged(true, false);
                 }
                 loadColumns(table.Columns);
-
             };
             this._userControlFieldRapidEntry.ConstraintSavedEvent += (object sender, ConstraintSavedEventArgs e) =>
             {
                 var table = (Table)listBoxTables.SelectedItem;
                 table.AddConstraint(e.Constraint);
-
             };
             this._userControlFieldRapidEntry.ForeignKeySavedEvent += (object sender, ForeignKeySavedEventArgs e) =>
             {
@@ -94,7 +93,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
                 var table = (Table)listBoxTables.SelectedItem;
                 schema.AddForeignKey(e.Key);
                 table.AddConstraint(e.Constraint);
-
             };
 
             this._userControlTableEntry = new UserControlTableEntry();
@@ -238,7 +236,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             populateForm(filteredList, false);
         }
 
-
         private void listBoxFields_SelectedIndexChanged(object sender, EventArgs e)
         {
             var table = (Table)listBoxTables.SelectedItem;
@@ -250,7 +247,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
                 this._userControlFieldRapidEntry.LoadForm(schema.Clone(), table.Clone(), column.Clone());
                 this.setPanelUserControl(this._userControlFieldRapidEntry);
             }
-            else if(table == null)
+            else if (table == null)
             {
                 this._userControlFieldRapidEntry.LoadForm();
             }
@@ -285,7 +282,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void buttonActions_Click(object sender, EventArgs e)
         {
-
         }
 
         private void buttonAddSchema_Click(object sender, EventArgs e)
@@ -368,7 +364,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
                     IsUnique = true,
                     ConstraintType = "CLUSTERED",
                     Columns = new List<ConstraintColumn>()
-                    
                 };
 
                 bool isMultiTenant = table.Columns.Any(x => x.Name.ToUpper() == "TENANTID");
@@ -422,7 +417,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void contextMenuStripRemoveForeignKey_Opening(object sender, CancelEventArgs e)
         {
-
         }
 
         public async Task SaveProject()
@@ -516,7 +510,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
-
         }
 
         private void buttonCompleteSchemaEditing_Click(object sender, EventArgs e)
@@ -533,7 +526,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void buttonBuildDependencies_Click(object sender, EventArgs e)
         {
-      
         }
 
         private void addIndexToolStripMenuItem_Click(object sender, EventArgs e)
@@ -574,7 +566,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
                     editForeignKeyToolStripMenuItem.Visible = false;
                     deleteForeignKeyToolStripMenuItem.Visible = false;
                 }
-
 
                 createPrimaryKeyToolStripMenuItem.Visible = false;
                 deletePrimaryKeyToolStripMenuItem.Visible = false;
@@ -620,7 +611,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
                 if (foreignKey != null)
                 {
-                    FormForeignKeyCreator keyCreator = new FormForeignKeyCreator(schema,foreignKey);
+                    FormForeignKeyCreator keyCreator = new FormForeignKeyCreator(schema, foreignKey);
                     keyCreator.ShowDialog();
                     if (keyCreator.Saved)
                     {
@@ -634,7 +625,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void geenrateSQLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         private void buildDependencyTreeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -645,7 +635,6 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void buttonTools_Click(object sender, EventArgs e)
         {
-         
         }
 
         private void buttonTools_MouseDown(object sender, MouseEventArgs e)
@@ -705,19 +694,18 @@ namespace Codenesium.DatabaseForgeLib.UserControls
                 else
                 {
                     string template = File.ReadAllText(index);
-                    string schema = JsonConvert.SerializeObject(this._database, 
+                    string schema = JsonConvert.SerializeObject(this._database,
                         Formatting.None,
                           new Newtonsoft.Json.JsonSerializerSettings
                           { StringEscapeHandling = Newtonsoft.Json.StringEscapeHandling.EscapeHtml });
 
-
-                    string modifiedTemplate = template.Replace("var databaseJson = '';", $"var databaseJson = '{schema}';");
+                    string modifiedTemplate = template.Replace("var databaseJson = '';", $"var databaseJson = '{schema.Replace(@"\r\n", "").Replace(@"\u", "")}';");
                     string destination = Path.Combine(reportsDirectory, $"{this._database.Name}-{DateTime.Now.ToString("yyyy-dd-M-HH-mm-ss")}.html");
                     File.WriteAllText(destination, modifiedTemplate);
                     System.Diagnostics.Process.Start(destination);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"There was an error generating the report. The message is {ex.Message}");
             }
