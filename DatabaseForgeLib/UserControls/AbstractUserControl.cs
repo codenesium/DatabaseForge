@@ -18,7 +18,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             private SemaphoreSlim _logSemaphore = new SemaphoreSlim(1, 1);
             public AbstractUserControl()
             {
-                InitializeComponent();
+            this.InitializeComponent();
             }
 
             public void showSpinner()
@@ -133,7 +133,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             private void AddLogMessage(string message)
             {
                 this._logSemaphore.Wait();
-                var last = this.LogMessages.LastOrDefault();
+            string last = this.LogMessages.LastOrDefault();
                 if (last == null || last != message)
                 {
                     this.LogMessages.Add(message);

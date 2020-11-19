@@ -411,11 +411,11 @@ namespace Codenesium.DatabaseContracts.DependencyResolver
         }
         public Guid GetGuidValue(int index = 0)
         {
-            return GetDeterministicGuid(index.ToString());
+            return this.GetDeterministicGuid(index.ToString());
         }
         public DateTime GetDateTimeValue(int index = 0)
         {
-            return dateTimes[index];
+            return this.dateTimes[index];
         }
 
         public TimeSpan GetTimeValue(int index = 0)
@@ -435,7 +435,7 @@ namespace Codenesium.DatabaseContracts.DependencyResolver
 
         public DateTime GetDateValue(int index = 0)
         {
-            return dateTimes[index];
+            return this.dateTimes[index];
         }
 
         //http://geekswithblogs.net/EltonStoneman/archive/2008/06/26/generating-deterministic-guids.aspx

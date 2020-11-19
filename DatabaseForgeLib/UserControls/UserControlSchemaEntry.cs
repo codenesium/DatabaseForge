@@ -21,15 +21,15 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         public UserControlSchemaEntry()
         {
-            InitializeComponent();
-            textBoxSchemaName.Focus();
+            this.InitializeComponent();
+            this.textBoxSchemaName.Focus();
         }
 
         public void LoadSchema(Schema schema)
         {
             this.Schema = schema;
             this._originalName = schema.Name;
-            populateForm(schema);
+            this.populateForm(schema);
             this.textBoxSchemaName.Select();
         }
 
@@ -41,16 +41,16 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void save()
         {
-            this.Schema.Name = textBoxSchemaName.Text;
+            this.Schema.Name = this.textBoxSchemaName.Text;
             this.SchemaSavedEvent(this, new SchemaSavedEventArgs(this.Schema.Clone(), this._originalName));
-            textBoxSchemaName.Clear();
+            this.textBoxSchemaName.Clear();
         }
 
         private void textBoxSchemaName_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!String.IsNullOrWhiteSpace(textBoxSchemaName.Text) && e.KeyChar == (char)Keys.Enter)
+            if (!String.IsNullOrWhiteSpace(this.textBoxSchemaName.Text) && e.KeyChar == (char)Keys.Enter)
             {
-                save();
+                this.save();
                 e.Handled = true;
             }
         }

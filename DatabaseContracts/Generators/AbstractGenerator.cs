@@ -67,8 +67,8 @@ namespace Codenesium.DatabaseContracts
                 });
 
 
-                var schema = database.Schemas.First(x => x.Name.ToUpper() == t.Schema.ToUpper());
-                var table = schema.Tables.First(x => x.Name.ToUpper() == t.Name.ToUpper());
+                Schema schema = database.Schemas.First(x => x.Name.ToUpper() == t.Schema.ToUpper());
+                Table table = schema.Tables.First(x => x.Name.ToUpper() == t.Name.ToUpper());
                 int primaryKey = 0;
 
                 if (primaryKeys.Keys.Any(k => k.Item1 == schema.Name && k.Item2 == table.Name)) // a primary key for this table exists

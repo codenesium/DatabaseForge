@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,7 +17,7 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 {
 	public partial class FormConnectToDatabase : MetroForm
 	{
-		protected static Logger logger = LogManager.GetCurrentClassLogger();
+		protected static Logger Logger = LogManager.GetCurrentClassLogger();
 
 		public bool Saved { get; private set; }
 
@@ -27,15 +27,15 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 
 		public FormConnectToDatabase()
 		{
-			InitializeComponent();
+            this.InitializeComponent();
 		}
 
 		public void LoadForm()
 		{
-			logger.Debug("Entering LoadForm");
-			textBoxInstance.Text = ConfigHelper.ReadAppSetting("DatabaseInstance");
-			textBoxUsername.Text = ConfigHelper.ReadAppSetting("DatabaseUsername");
-			comboBoxProvider.SelectedItem = ConfigHelper.ReadAppSetting("DatabaseProvider");
+			Logger.Debug("Entering LoadForm");
+            this.textBoxInstance.Text = ConfigHelper.ReadAppSetting("DatabaseInstance");
+            this.textBoxUsername.Text = ConfigHelper.ReadAppSetting("DatabaseUsername");
+            this.comboBoxProvider.SelectedItem = ConfigHelper.ReadAppSetting("DatabaseProvider");
 
 			//if (String.IsNullOrWhiteSpace(textBoxInstance.Text))
 			//{
@@ -60,7 +60,7 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 			//textBoxPassword.Text = "Passw0rd";
 			//buttonTestConnection_Click(this, new EventArgs());
 #endif
-			logger.Debug("Exiting LoadForm");
+			Logger.Debug("Exiting LoadForm");
 		}
 
 
@@ -69,26 +69,26 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 		{
 			try
 			{
-				IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory(comboBoxProvider.SelectedItem.ToString());
+				IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory(this.comboBoxProvider.SelectedItem.ToString());
 				if(this.checkBoxWindowsAuth.Checked)
 				{
-					this.ConnectionString = sqlInterface.CreateConnectionStringUsingWindowsAuthentication(textBoxInstance.Text, comboBoxDatabases.SelectedValue?.ToString());
+					this.ConnectionString = sqlInterface.CreateConnectionStringUsingWindowsAuthentication(this.textBoxInstance.Text, this.comboBoxDatabases.SelectedValue?.ToString());
 				}
 				else
 				{
-					this.ConnectionString = sqlInterface.CreateConnectionString(textBoxInstance.Text, comboBoxDatabases.SelectedValue?.ToString(), textBoxUsername.Text, textBoxPassword.Text);
+					this.ConnectionString = sqlInterface.CreateConnectionString(this.textBoxInstance.Text, this.comboBoxDatabases.SelectedValue?.ToString(), this.textBoxUsername.Text, this.textBoxPassword.Text);
 				}
 
-				progressSpinnerDefault.Visible = true;
-				comboBoxDatabases.DataSource = null;
-				resetUserMessage();
+                this.progressSpinnerDefault.Visible = true;
+                this.comboBoxDatabases.DataSource = null;
+                this.ResetUserMessage();
 				sqlInterface.SetConnectionString(this.ConnectionString);
 				bool result = sqlInterface.TestConnection();
 				if (result)
 				{
-					SetUserMessage("Connected!", false);
+                    this.SetUserMessage("Connected!", false);
 
-					comboBoxDatabases.DataSource = await Task<List<string>>.Run(() =>
+                    this.comboBoxDatabases.DataSource = await Task<List<string>>.Run(() =>
 				   {
 					   List<string> databases = sqlInterface.GetDatabaseList();
 					   databases.Sort();
@@ -97,77 +97,77 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 				}
 				else
 				{
-					SetUserMessage("Unable to Connect...", true);
+                    this.SetUserMessage("Unable to Connect...", true);
 				}
 			}
 			catch (Exception ex)
 			{
-				SetUserMessage($"Unable to Connect...Error={ex.Message}", true);
+                this.SetUserMessage($"Unable to Connect...Error={ex.Message}", true);
 			}
 			finally
 			{
-				progressSpinnerDefault.Visible = false;
+                this.progressSpinnerDefault.Visible = false;
 			}
 		}
 
 		private void buttonSave_Click(object sender, EventArgs e)
 		{
-			if (comboBoxDatabases.SelectedIndex > -1)
+			if (this.comboBoxDatabases.SelectedIndex > -1)
 			{
 				this.Saved = true;
-				this.Provider = comboBoxProvider.Text;
-				IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory(comboBoxProvider.SelectedItem.ToString());
+				this.Provider = this.comboBoxProvider.Text;
+				IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory(this.comboBoxProvider.SelectedItem.ToString());
 
 				if(this.checkBoxWindowsAuth.Checked)
 				{
-					this.ConnectionString = sqlInterface.CreateConnectionStringUsingWindowsAuthentication(textBoxInstance.Text, comboBoxDatabases.SelectedValue?.ToString());
+					this.ConnectionString = sqlInterface.CreateConnectionStringUsingWindowsAuthentication(this.textBoxInstance.Text, this.comboBoxDatabases.SelectedValue?.ToString());
 
 				}
 				else
 				{
-					this.ConnectionString = sqlInterface.CreateConnectionString(textBoxInstance.Text, comboBoxDatabases.SelectedValue?.ToString(), textBoxUsername.Text, textBoxPassword.Text);
+					this.ConnectionString = sqlInterface.CreateConnectionString(this.textBoxInstance.Text, this.comboBoxDatabases.SelectedValue?.ToString(), this.textBoxUsername.Text, this.textBoxPassword.Text);
 				}
 
-				ConfigHelper.WriteAppSetting("DatabaseInstance", textBoxInstance.Text);
-				ConfigHelper.WriteAppSetting("DatabaseUsername", textBoxUsername.Text);
-				ConfigHelper.WriteAppSetting("DatabaseProvider", comboBoxProvider.SelectedItem?.ToString());
+				ConfigHelper.WriteAppSetting("DatabaseInstance", this.textBoxInstance.Text);
+				ConfigHelper.WriteAppSetting("DatabaseUsername", this.textBoxUsername.Text);
+				ConfigHelper.WriteAppSetting("DatabaseProvider", this.comboBoxProvider.SelectedItem?.ToString());
 				this.Close();
 			}
 			else
 			{
-				SetUserMessage("Database not selected...", true);
+                this.SetUserMessage("Database not selected...", true);
 			}
 		}
 
 		private void SetUserMessage(string text, bool error)
 		{
 
-			labelUserMessage.Text = text;
+            this.labelUserMessage.Text = text;
 
 			if (error)
 			{
-				labelUserMessage.ForeColor = Color.Red;
+                this.labelUserMessage.ForeColor = Color.Red;
 			}
 			else
 			{
-				labelUserMessage.ForeColor = Color.Green;
+                this.labelUserMessage.ForeColor = Color.Green;
 			}
 
-			labelUserMessage.Visible = true;
+            this.labelUserMessage.Visible = true;
 		}
 
-		private void resetUserMessage()
+		private void ResetUserMessage()
 		{
-			labelUserMessage.Text = "";
-			labelUserMessage.Visible = false;
+            this.labelUserMessage.Text = "";
+            this.labelUserMessage.Visible = false;
 		}
 
-		private async void textBoxPassword_Leave(object sender, EventArgs e)
+		private async void TextBoxPassword_Leave(object sender, EventArgs e)
 		{
 			await this.TestConnection();
 		}
 
-		private async void buttonTestConnection_Click(object sender, EventArgs e)
+		private async void ButtonTestConnection_Click(object sender, EventArgs e)
 		{
 			await this.TestConnection();
 		}
@@ -175,37 +175,37 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 		private async Task TestConnection()
 		{
 
-			progressSpinnerDefault.Visible = true;
-			IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory(comboBoxProvider.SelectedItem.ToString());
+            this.progressSpinnerDefault.Visible = true;
+			IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory(this.comboBoxProvider.SelectedItem.ToString());
 
-			if (checkBoxWindowsAuth.Checked)
+			if (this.checkBoxWindowsAuth.Checked)
 			{
-				this.ConnectionString = sqlInterface.CreateConnectionStringUsingWindowsAuthentication(textBoxInstance.Text, comboBoxDatabases.SelectedValue?.ToString());
+				this.ConnectionString = sqlInterface.CreateConnectionStringUsingWindowsAuthentication(this.textBoxInstance.Text, this.comboBoxDatabases.SelectedValue?.ToString());
 			}
 			else
 			{
-				this.ConnectionString = sqlInterface.CreateConnectionString(textBoxInstance.Text, comboBoxDatabases.SelectedValue?.ToString(), textBoxUsername.Text, textBoxPassword.Text);
+				this.ConnectionString = sqlInterface.CreateConnectionString(this.textBoxInstance.Text, this.comboBoxDatabases.SelectedValue?.ToString(), this.textBoxUsername.Text, this.textBoxPassword.Text);
 			}
 
 			sqlInterface.SetConnectionString(this.ConnectionString);
 			if (await sqlInterface.TestConnectionAsync())
 			{
 				this.SetUserMessage("Connected!", false);
-				await LoadDatabases();
+				await this.LoadDatabases();
 			}
 			else
 			{
 				this.SetUserMessage("Unable to Connect...", true);
 			}
-			progressSpinnerDefault.Visible = false;
+            this.progressSpinnerDefault.Visible = false;
 
 		}
 
 
-        private async void comboBoxProvider_SelectedIndexChanged(object sender, EventArgs e)
+        private async void ComboBoxProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBoxDatabases.DataSource = null;
-			if((Providers)Enum.Parse(typeof(Providers),comboBoxProvider.SelectedItem.ToString()) == Providers.MSSQL)
+            this.comboBoxDatabases.DataSource = null;
+			if((Providers)Enum.Parse(typeof(Providers), this.comboBoxProvider.SelectedItem.ToString()) == Providers.MSSQL)
 			{
 				this.checkBoxWindowsAuth.Visible = true;
 			}

@@ -43,7 +43,7 @@ namespace Codenesium.DatabaseContracts.DependencyResolver
                     columnClause += ",";
                 }
 
-                var fieldTypeIndexKey = Tuple.Create<string, string, string>(schema.Name, table.Name, column.Name);
+                Tuple<string, string, string> fieldTypeIndexKey = Tuple.Create<string, string, string>(schema.Name, table.Name, column.Name);
 
                 // We have not inserted a record for the schema:table:column. Create one. 
                 if (!fieldTypeIndex.Keys.Any(x => x.Item1 == fieldTypeIndexKey.Item1 && x.Item2 == fieldTypeIndexKey.Item2 && x.Item3 == fieldTypeIndexKey.Item3))

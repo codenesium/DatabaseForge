@@ -16,18 +16,18 @@ namespace Codenesium.DatabaseContracts
                 
             database.Schemas.ForEach(schema =>
             {
-                sb.AppendLine(GenerateCreateSchema(schema));
+                sb.AppendLine(this.GenerateCreateSchema(schema));
             });
 
 
             database.Schemas.ForEach(schema =>
             {
-                sb.AppendLine(GenerateDisableForeignKeyContraints(schema));
+                sb.AppendLine(this.GenerateDisableForeignKeyContraints(schema));
             });
 
             database.Schemas.ForEach(schema =>
             {
-                sb.AppendLine(GenerateDropAllTables(schema));
+                sb.AppendLine(this.GenerateDropAllTables(schema));
             });
 
 
@@ -35,7 +35,7 @@ namespace Codenesium.DatabaseContracts
             {
                 schema.Tables.ForEach(table =>
                 {
-                    sb.AppendLine(GenerateCreateTableStatement(schema.Name, table, schema.ForeignKeys));
+                    sb.AppendLine(this.GenerateCreateTableStatement(schema.Name, table, schema.ForeignKeys));
                 });
             });
 
@@ -48,7 +48,7 @@ namespace Codenesium.DatabaseContracts
                     constraints.AddRange(table.Constraints);
                 });
             });
-            sb.AppendLine(GenerateIndexes(constraints));
+            sb.AppendLine(this.GenerateIndexes(constraints));
 
             List<DefaultConstraint> defaultConstraints = new List<DefaultConstraint>();
             database.Schemas.ForEach(schema =>
@@ -58,12 +58,12 @@ namespace Codenesium.DatabaseContracts
                     defaultConstraints.AddRange(table.DefaultConstraints);
                 });
             });
-            sb.AppendLine(GenerateCreateDefaultValueConstraints(defaultConstraints));
+            sb.AppendLine(this.GenerateCreateDefaultValueConstraints(defaultConstraints));
 
 
             database.Schemas.ForEach(schema =>
             {
-                sb.AppendLine(GenerateForeignKeyConstraints(schema));
+                sb.AppendLine(this.GenerateForeignKeyConstraints(schema));
             });
 
             return sb.ToString();
@@ -268,11 +268,11 @@ namespace Codenesium.DatabaseContracts
             {
                 if (index.IsPrimaryKey)
                 {
-                    sb.Append(GeneratePrimaryKeyConstraint(index));
+                    sb.Append(this.GeneratePrimaryKeyConstraint(index));
                 }
                 else
                 {
-                    sb.Append(GenerateIndex(index));
+                    sb.Append(this.GenerateIndex(index));
                 }
             });
             return sb.ToString();

@@ -58,7 +58,7 @@
 			this.comboBoxProvider.Size = new System.Drawing.Size(216, 29);
 			this.comboBoxProvider.TabIndex = 36;
 			this.comboBoxProvider.UseSelectable = true;
-			this.comboBoxProvider.SelectedIndexChanged += new System.EventHandler(this.comboBoxProvider_SelectedIndexChanged);
+			this.comboBoxProvider.SelectedIndexChanged += new System.EventHandler(this.ComboBoxProvider_SelectedIndexChanged);
 			// 
 			// metroLabel4
 			// 
@@ -187,7 +187,7 @@
 			this.textBoxPassword.UseSelectable = true;
 			this.textBoxPassword.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
 			this.textBoxPassword.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
-			this.textBoxPassword.Leave += new System.EventHandler(this.textBoxPassword_Leave);
+			this.textBoxPassword.Leave += new System.EventHandler(this.TextBoxPassword_Leave);
 			// 
 			// metroLabel2
 			// 
@@ -254,7 +254,7 @@
 			this.buttonTestConnection.Size = new System.Drawing.Size(28, 23);
 			this.buttonTestConnection.TabIndex = 50;
 			this.buttonTestConnection.UseVisualStyleBackColor = true;
-			this.buttonTestConnection.Click += new System.EventHandler(this.buttonTestConnection_Click);
+			this.buttonTestConnection.Click += new System.EventHandler(this.ButtonTestConnection_Click);
 			// 
 			// checkBoxWindowsAuth
 			// 

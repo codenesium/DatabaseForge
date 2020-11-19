@@ -15,7 +15,7 @@ namespace Codenesium.DatabaseForgeLib.UserForms
     {
         public FormSettings()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

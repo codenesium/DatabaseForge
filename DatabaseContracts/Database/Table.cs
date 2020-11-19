@@ -21,7 +21,7 @@ namespace Codenesium.DatabaseContracts
         public void SetProperties(string name,bool isView, List<Column> columns, List<Constraint> constraints, List<DefaultConstraint> defaultConstraints)
         {
             this.Name = name;
-            this.IsView = IsView;
+            this.IsView = this.IsView;
             this.Columns = columns;
             this.Constraints = constraints;
             this.DefaultConstraints = defaultConstraints;

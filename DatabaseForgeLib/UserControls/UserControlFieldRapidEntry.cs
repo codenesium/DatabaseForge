@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -18,8 +18,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         public EventHandler<ColumnSavedEventArgs> ColumnSavedEvent;
         public EventHandler<ForeignKeySavedEventArgs> ForeignKeySavedEvent;
         public EventHandler<ConstraintSavedEventArgs> ConstraintSavedEvent;
-        private bool _loading;
-        private string _originalName = string.Empty;
+        private string originalName = string.Empty;
         public Column Column { get; private set; } = new Column();
 
         public Table Table { get; private set; }
@@ -30,10 +29,8 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         public UserControlFieldRapidEntry(string provider)
         {
-            InitializeComponent();
-            this._loading = true;
+            this.InitializeComponent();
             this.SetProvider(provider);
-            this._loading = false;
         }
 
         protected override void OnEnter(EventArgs e)
@@ -50,15 +47,15 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         }
         private void loadControls()
         {
-            Action loadTypes = () =>
+            void loadTypes()
             {
-                comboBoxFieldType.Items.Clear();
+                this.comboBoxFieldType.Items.Clear();
                 IDatabaseInterface sqlInterface = DatabaseInterfaceFactory.Factory(this._provider);
-                foreach (var item in sqlInterface.ColumnTypes)
+                foreach (string item in sqlInterface.ColumnTypes)
                 {
-                    comboBoxFieldType.Items.Add(item);
+                    this.comboBoxFieldType.Items.Add(item);
                 }
-            };
+            }
 
 
             if (this.comboBoxFieldType.InvokeRequired)
@@ -78,37 +75,33 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             {
                 this.textBoxFieldName.Invoke(new MethodInvoker(delegate
                 {
-                    textBoxFieldName.Select();
+                    this.textBoxFieldName.Select();
                 }));
             }
             else
             {
-                textBoxFieldName.Select();
+                this.textBoxFieldName.Select();
             }     
         }
 
         public void LoadForm(Schema schema,Table table)
         {
-            this._loading = true;
             this.Column = new Column();
             this.Schema = schema;
             this.Table = table;
             this.clearFields();
             this.textBoxFieldName.Select();
-            this._loading = false;
         }
 
         public void LoadForm()
         {
-            this._loading = true;
             this.clearFields();
             this.textBoxFieldName.Select();
-            this._loading = false;
+ 
         }
 
         public void LoadForm(Schema schema, Table table, Column column)
         {
-            this._loading = true;
             this.Column = column;
             this.Table = table;
             this.Schema = schema;
@@ -118,13 +111,12 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             this.checkBoxNullable.Checked = this.Column.IsNullable;
             this.checkBoxDatabaseGenerated.Checked = this.Column.DatabaseGenerated;
             this.textBoxFieldName.Select();
-            this._originalName = column.Name;
-            this._loading = false;
+            this.originalName = column.Name;
         }
 
         private void clearFields()
         {
-            this._originalName = string.Empty;
+            this.originalName = string.Empty;
             this.textBoxFieldName.Clear();
             this.comboBoxFieldType.SelectedIndex = -1;
             this.textBoxMaxLength.Clear();
@@ -134,29 +126,29 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void save()
         {
-            if(comboBoxFieldType.SelectedIndex == -1)
+            if(this.comboBoxFieldType.SelectedIndex == -1)
             {
-                comboBoxFieldType.SelectedItem = "varchar";
-                textBoxMaxLength.Text = "128";
+                this.comboBoxFieldType.SelectedItem = "varchar";
+                this.textBoxMaxLength.Text = "128";
             }
 
             this.Column.Name = this.textBoxFieldName.Text;
             this.Column.DataType =  this.comboBoxFieldType.SelectedItem.ToString();
             this.Column.MaxLength = this.textBoxMaxLength.Text.ToInt();
             this.Column.IsNullable = this.checkBoxNullable.Checked;
-            this.Column.DatabaseGenerated = checkBoxDatabaseGenerated.Checked;
+            this.Column.DatabaseGenerated = this.checkBoxDatabaseGenerated.Checked;
             this.setPrimaryKey(this.Column.Name);
             this.setForeignKey(this.Column.Name, this.Table.Name);
-            this.ColumnSavedEvent(this, new ColumnSavedEventArgs(this.Column.Clone(), this._originalName));
+            this.ColumnSavedEvent(this, new ColumnSavedEventArgs(this.Column.Clone(), this.originalName));
             this.clearFields();
-            textBoxFieldName.Select();
+            this.textBoxFieldName.Select();
         }
 
         private void textBoxFieldName_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!String.IsNullOrWhiteSpace(textBoxFieldName.Text) && e.KeyChar == (char)Keys.Enter)
+            if (!string.IsNullOrWhiteSpace(this.textBoxFieldName.Text) && e.KeyChar == (char)Keys.Enter)
             {
-                save();
+                this.save();
                 e.Handled = true;
             }
         }
@@ -165,7 +157,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         {
             if (columnName.ToUpper() == "ID")
             {
-                var primaryKey = new DatabaseContracts.Constraint();
+                DatabaseContracts.Constraint primaryKey = new DatabaseContracts.Constraint();
                 primaryKey.Columns.Add(new ConstraintColumn()
                 {
                     Name = columnName,
@@ -194,7 +186,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
                     if (primaryKey != null)
                     {
-                        var foreignKey = new ForeignKey()
+                        ForeignKey foreignKey = new ForeignKey()
                         {
                             ForeignKeyName = ($"FK_{tableName}_{columnName}_{primaryKeyTableName}_{primaryKey.Columns.First().Name}").ToLower(),
                             Columns = new List<ForeignKeyColumn>()
@@ -246,32 +238,32 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void textBoxFieldName_TextChanged(object sender, EventArgs e)
         {
-            if (comboBoxFieldType.SelectedIndex == -1)
+            if (this.comboBoxFieldType.SelectedIndex == -1)
             {
-                if (textBoxFieldName.Text.ToUpper() == "ID" || textBoxFieldName.Text.ToUpper().EndsWith("ID"))
+                if (this.textBoxFieldName.Text.ToUpper() == "ID" || this.textBoxFieldName.Text.ToUpper().EndsWith("ID"))
                 {
 
-                    comboBoxFieldType.SelectedItem = "int";
-                    textBoxMaxLength.Text = "";
-                    if (textBoxFieldName.Text.ToUpper() == "ID")
+                    this.comboBoxFieldType.SelectedItem = "int";
+                    this.textBoxMaxLength.Text = "";
+                    if (this.textBoxFieldName.Text.ToUpper() == "ID")
                     {
-                        checkBoxDatabaseGenerated.Checked = true;
+                        this.checkBoxDatabaseGenerated.Checked = true;
                     }
                 }
-                else if (textBoxFieldName.Text.ToUpper() == "EXTERNALID" || textBoxFieldName.Text.ToUpper() == "ROWGUID")
+                else if (this.textBoxFieldName.Text.ToUpper() == "EXTERNALID" || this.textBoxFieldName.Text.ToUpper() == "ROWGUID")
                 {
-                    comboBoxFieldType.SelectedItem = "uniqueidentifier";
-                    textBoxMaxLength.Text = "";
+                    this.comboBoxFieldType.SelectedItem = "uniqueidentifier";
+                    this.textBoxMaxLength.Text = "";
                 }
-                else if (textBoxFieldName.Text.ToUpper() == "NAME")
+                else if (this.textBoxFieldName.Text.ToUpper() == "NAME")
                 {
-                    comboBoxFieldType.SelectedItem = "varchar";
-                    textBoxMaxLength.Text = "128";
+                    this.comboBoxFieldType.SelectedItem = "varchar";
+                    this.textBoxMaxLength.Text = "128";
                 }
-                else if (textBoxFieldName.Text.ToUpper().Contains("DATE"))
+                else if (this.textBoxFieldName.Text.ToUpper().Contains("DATE"))
                 {
-                    comboBoxFieldType.SelectedItem = "datetime";
-                    textBoxMaxLength.Text = "";
+                    this.comboBoxFieldType.SelectedItem = "datetime";
+                    this.textBoxMaxLength.Text = "";
                 }
             }
         }
@@ -280,7 +272,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                save();
+                this.save();
                 e.Handled = true;
             }
 
@@ -290,14 +282,14 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                save();
+                this.save();
                 e.Handled = true;
             }
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            save();
+            this.save();
         }
     }
 } 

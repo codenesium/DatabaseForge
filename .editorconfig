@@ -70,6 +70,9 @@ dotnet_diagnostic.CA1062.severity = silent
 # CA1307: Behavior of string.Replace
 dotnet_diagnostic.CA1307.severity = silent
 
+# IDE1006: Naming Styles
+dotnet_diagnostic.IDE1006.severity = none
+
 [*]
 charset = utf-8
 indent_style = space

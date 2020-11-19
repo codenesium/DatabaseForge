@@ -268,7 +268,7 @@ namespace Codenesium.DatabaseContracts
                 {
                     if (this.Schemas[i].Tables[t].Name.ToUpper() != tenantTableName.ToUpper())
                     {
-                        var primaryKey = this.Schemas[i].Tables[t].Constraints.FirstOrDefault(x => x.IsPrimaryKey);
+                        Constraint primaryKey = this.Schemas[i].Tables[t].Constraints.FirstOrDefault(x => x.IsPrimaryKey);
 
                         if (primaryKey != null)
                         {
@@ -347,9 +347,9 @@ namespace Codenesium.DatabaseContracts
 
         public virtual void DeletePrimaryKey(string schemaName, string tableName)
         {
-            var schema = this.Schemas.First(x => x.Name.ToUpper() == schemaName.ToUpper());
-            var table = schema.Tables.First(x => x.Name.ToUpper() == tableName.ToUpper());
-            var primaryKey = table.Constraints.FirstOrDefault(x => x.IsPrimaryKey);
+            Schema schema = this.Schemas.First(x => x.Name.ToUpper() == schemaName.ToUpper());
+            Table table = schema.Tables.First(x => x.Name.ToUpper() == tableName.ToUpper());
+            Constraint primaryKey = table.Constraints.FirstOrDefault(x => x.IsPrimaryKey);
 
             if(primaryKey != null)
             {
@@ -360,8 +360,8 @@ namespace Codenesium.DatabaseContracts
 
         private void RemoveForeignKeyReferencesToTable(string schemaName, string tableName)
         {
-            var schema = this.Schemas.First(x => x.Name.ToUpper() == schemaName.ToUpper());
-            var table = schema.Tables.First(x => x.Name.ToUpper() == tableName.ToUpper());
+            Schema schema = this.Schemas.First(x => x.Name.ToUpper() == schemaName.ToUpper());
+            Table table = schema.Tables.First(x => x.Name.ToUpper() == tableName.ToUpper());
             for (int i = 0; i < this.Schemas.Count; i++)
             {
                 this.Schemas[i].ForeignKeys.RemoveAll(x => x.Columns.Any(c =>
@@ -379,14 +379,14 @@ namespace Codenesium.DatabaseContracts
         public virtual void DeleteTable(string schemaName, string tableName)
         {
             this.RemoveForeignKeyReferencesToTable(schemaName, tableName);
-            var schema = this.Schemas.First(x => x.Name.ToUpper() == schemaName.ToUpper());
-            var table = schema.Tables.First(x => x.Name.ToUpper() == tableName.ToUpper());
+            Schema schema = this.Schemas.First(x => x.Name.ToUpper() == schemaName.ToUpper());
+            Table table = schema.Tables.First(x => x.Name.ToUpper() == tableName.ToUpper());
             schema.Tables.Remove(table);
         }
 
         public virtual void DeleteSchema(string schemaName)
         {
-            var schema = this.Schemas.First(x => x.Name.ToUpper() == schemaName.ToUpper());
+            Schema schema = this.Schemas.First(x => x.Name.ToUpper() == schemaName.ToUpper());
             this.Schemas.Remove(schema);
         }
 
@@ -400,11 +400,11 @@ namespace Codenesium.DatabaseContracts
             {
                 for (int i = 0; i < this.Schemas.Count; i++)
                 {
-                   var matchingByPrimaryKeys = this.Schemas[i].ForeignKeys.Where(x => x.Columns.Any(c =>
+                    List<ForeignKey> matchingByPrimaryKeys = this.Schemas[i].ForeignKeys.Where(x => x.Columns.Any(c =>
                         c.PrimaryKeySchemaName.ToUpper() == originalName.ToUpper()
                         )).ToList();
 
-                    var matchingByForeignKeys  = this.Schemas[i].ForeignKeys.Where(x => x.Columns.Any(c =>
+                    List<ForeignKey> matchingByForeignKeys  = this.Schemas[i].ForeignKeys.Where(x => x.Columns.Any(c =>
                       c.ForeignKeySchemaName.ToUpper() == originalName.ToUpper()
                       )).ToList();
 

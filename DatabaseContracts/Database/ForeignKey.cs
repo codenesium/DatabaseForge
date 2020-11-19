@@ -19,7 +19,7 @@ namespace Codenesium.DatabaseContracts
             {
                key.Columns.Add(x.Clone());
             });
-            key.ForeignKeyName = ForeignKeyName;
+            key.ForeignKeyName = this.ForeignKeyName;
             return key;
         }
     }

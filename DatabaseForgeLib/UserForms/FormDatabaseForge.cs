@@ -29,7 +29,7 @@ namespace Codenesium.DatabaseForgeLib.UserForms
         {
             this._settings.CodenesiumMode = codenesiumMode;
             this.DatabaseContainer = container;
-            InitializeComponent();
+            this.InitializeComponent();
             this.initializeUserControls();
             this.setPanelUserControl(this._userControlDBForgeEditor);
         }
@@ -105,7 +105,7 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 
         private void buttonMenu_MouseDown(object sender, MouseEventArgs e)
         {
-            contextMenuStripMenu.Show(buttonMenu, e.Location);
+            this.contextMenuStripMenu.Show(this.buttonMenu, e.Location);
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)

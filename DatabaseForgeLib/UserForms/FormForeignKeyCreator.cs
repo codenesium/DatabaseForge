@@ -26,11 +26,11 @@ namespace Codenesium.DatabaseForgeLib.UserForms
             this._schema = schema;
             this._foreignColumn = foreignColumn;
             this._foreignTable = foreignTable;
-            InitializeComponent();
-            comboBoxTable.DisplayMember = nameof(Table.Name);
-            comboBoxColumn.DisplayMember = nameof(Column.Name);
-            loadTables();
-            selectParsedField();
+            this.InitializeComponent();
+            this.comboBoxTable.DisplayMember = nameof(Table.Name);
+            this.comboBoxColumn.DisplayMember = nameof(Column.Name);
+            this.loadTables();
+            this.selectParsedField();
         }
 
         public FormForeignKeyCreator(Schema schema, ForeignKey key)
@@ -48,57 +48,57 @@ namespace Codenesium.DatabaseForgeLib.UserForms
                 this._foreignColumn = key.Columns.First().ForeignKeyColumnName;
             }
 
-            var table = schema.Tables.First(t => t.Name.ToUpper() == key.Columns.First().PrimaryKeyTableName.ToUpper());
-            InitializeComponent();
-            comboBoxTable.DisplayMember = nameof(Table.Name);
-            comboBoxColumn.DisplayMember = nameof(Column.Name);
-            loadTables();
-            comboBoxTable.SelectedItem = table;
-            comboBoxColumn.SelectedItem = table.Columns.First(c => c.Name.ToUpper() == key.Columns.First(kc => kc.PrimaryKeyColumnName.ToUpper() != "TENANTID").PrimaryKeyColumnName.ToUpper());
+            Table table = schema.Tables.First(t => t.Name.ToUpper() == key.Columns.First().PrimaryKeyTableName.ToUpper());
+            this.InitializeComponent();
+            this.comboBoxTable.DisplayMember = nameof(Table.Name);
+            this.comboBoxColumn.DisplayMember = nameof(Column.Name);
+            this.loadTables();
+            this.comboBoxTable.SelectedItem = table;
+            this.comboBoxColumn.SelectedItem = table.Columns.First(c => c.Name.ToUpper() == key.Columns.First(kc => kc.PrimaryKeyColumnName.ToUpper() != "TENANTID").PrimaryKeyColumnName.ToUpper());
         }
 
         private void selectParsedField()
         {
             if(this._foreignColumn.ToUpper().EndsWith("ID"))
             {
-                var possibleTableName = this._foreignColumn.Substring(0, this._foreignColumn.Length - 2);
-                var possibleTable = this._schema.Tables.FirstOrDefault(x => x.Name.ToUpper() == possibleTableName.ToUpper());
+                string possibleTableName = this._foreignColumn.Substring(0, this._foreignColumn.Length - 2);
+                Table possibleTable = this._schema.Tables.FirstOrDefault(x => x.Name.ToUpper() == possibleTableName.ToUpper());
                 if (possibleTable != null)
                 {
-                    comboBoxTable.SelectedItem = possibleTable;
-                    comboBoxColumn.SelectedItem = possibleTable.Columns.FirstOrDefault(x => x.Name.ToUpper() == "ID");
+                    this.comboBoxTable.SelectedItem = possibleTable;
+                    this.comboBoxColumn.SelectedItem = possibleTable.Columns.FirstOrDefault(x => x.Name.ToUpper() == "ID");
                 }
             }
         }
 
         private void loadTables()
         {
-            comboBoxTable.Items.Clear();
+            this.comboBoxTable.Items.Clear();
             this._schema.Tables.OrderBy(x=> x.Name).ToList().ForEach(x =>
             {
-                comboBoxTable.Items.Add(x);
+                this.comboBoxTable.Items.Add(x);
             });
         }
 
         private void loadFields()
         {
-            if (comboBoxTable.SelectedIndex > -1)
+            if (this.comboBoxTable.SelectedIndex > -1)
             {
-                var table = (Table)comboBoxTable.SelectedItem;
-                comboBoxColumn.Items.Clear();
+                Table table = (Table)this.comboBoxTable.SelectedItem;
+                this.comboBoxColumn.Items.Clear();
                 table.Columns.OrderBy(x => x.Name).ToList().ForEach(x =>
                 {
-                    comboBoxColumn.Items.Add(x);
+                    this.comboBoxColumn.Items.Add(x);
                 });
             }
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (comboBoxTable.SelectedIndex > -1 && comboBoxColumn.SelectedIndex > -1)
+            if (this.comboBoxTable.SelectedIndex > -1 && this.comboBoxColumn.SelectedIndex > -1)
             {
-                var column = (Column)comboBoxColumn.SelectedItem;
-                var table = (Table)comboBoxTable.SelectedItem;
+                Column column = (Column)this.comboBoxColumn.SelectedItem;
+                Table table = (Table)this.comboBoxTable.SelectedItem;
 
 
                 ForeignKeyColumn fkColumn = new ForeignKeyColumn()
@@ -158,7 +158,7 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 
 
                 this.Constraint = contraint;
-                this.ForeignKey.ForeignKeyName = textBoxKeyName.Text;
+                this.ForeignKey.ForeignKeyName = this.textBoxKeyName.Text;
 
                 if (isMultiTenant)
                 {
@@ -173,16 +173,16 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 
         private void comboBoxTable_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loadFields();
+            this.loadFields();
         }
 
         private void comboBoxField_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxColumn.SelectedIndex > -1)
+            if(this.comboBoxColumn.SelectedIndex > -1)
             {
-                var field = (Column)comboBoxColumn.SelectedItem;
-                var table = (Table)comboBoxTable.SelectedItem;
-                textBoxKeyName.Text = $"FK_{this._foreignTable}_{this._foreignColumn}_{table.Name}_{field.Name}";
+                Column field = (Column)this.comboBoxColumn.SelectedItem;
+                Table table = (Table)this.comboBoxTable.SelectedItem;
+                this.textBoxKeyName.Text = $"FK_{this._foreignTable}_{this._foreignColumn}_{table.Name}_{field.Name}";
             }
         }
     }

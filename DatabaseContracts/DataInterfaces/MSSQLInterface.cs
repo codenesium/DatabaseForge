@@ -37,9 +37,9 @@ namespace Codenesium.DatabaseContracts
 
             using (SqlConnection conn = new SqlConnection(this._connectionString))
             {
-                List<Constraint> databaseConstraints = GetIndexesForDatabase();
-                List<DefaultConstraint> databaseDefaultConstraints = GetDefaultConstraintsForDatabase();
-                List<ForeignKey> databaseForeignKeys = GetForeignKeysForDatabase();
+                List<Constraint> databaseConstraints = this.GetIndexesForDatabase();
+                List<DefaultConstraint> databaseDefaultConstraints = this.GetDefaultConstraintsForDatabase();
+                List<ForeignKey> databaseForeignKeys = this.GetForeignKeysForDatabase();
 
                 conn.Open();
                 SqlCommand command = new SqlCommand(@"SELECT
@@ -88,7 +88,7 @@ namespace Codenesium.DatabaseContracts
                     {
                         column.DatabaseGenerated = true;
                     }
-                    var existingSchema = container.Schemas.FirstOrDefault(x => x.Name == schema);
+                    Schema existingSchema = container.Schemas.FirstOrDefault(x => x.Name == schema);
 
                     if (existingSchema == null)
                     {
@@ -97,12 +97,12 @@ namespace Codenesium.DatabaseContracts
                             Name = schema,
                             ForeignKeys = databaseForeignKeys.Where(f => f.Columns.Any(c => c.ForeignKeySchemaName == schema)).ToList()
                         };
-                        var existingTable = newSchema.Tables.FirstOrDefault(x => x.Name == table);
+                        Table existingTable = newSchema.Tables.FirstOrDefault(x => x.Name == table);
                         if (existingTable == null)
                         {
                             Table newTable = new Table();
 
-                            var tableType = reader["TABLE_TYPE"].ToString();
+                            string tableType = reader["TABLE_TYPE"].ToString();
                             if (tableType.ToUpper() == "VIEW")
                             {
                                 newTable.IsView = true;
@@ -122,12 +122,12 @@ namespace Codenesium.DatabaseContracts
                     }
                     else
                     {
-                        var existingTable = existingSchema.Tables.FirstOrDefault(x => x.Name == table);
+                        Table existingTable = existingSchema.Tables.FirstOrDefault(x => x.Name == table);
                         if (existingTable == null)
                         {
                             Table newTable = new Table();
 
-                            var tableType = reader["TABLE_TYPE"].ToString();
+                            string tableType = reader["TABLE_TYPE"].ToString();
                             if (tableType.ToUpper() == "VIEW")
                             {
                                 newTable.IsView = true;
@@ -201,7 +201,7 @@ INNER JOIN (
 
                 while (reader.Read())
                 {
-                    var column = new ForeignKeyColumn
+                    ForeignKeyColumn column = new ForeignKeyColumn
                     {
                         ForeignKeyTableName = reader["FK_Table"].ToString(),
                         ForeignKeyColumnName = reader["FK_Column"].ToString(),
@@ -212,7 +212,7 @@ INNER JOIN (
                         Order =  reader["ORDINAL_POSITION"].ToString().ToInt()
                     };
 
-                    var key = new ForeignKey();
+                    ForeignKey key = new ForeignKey();
                     key.Columns.Add(column);
                     key.ForeignKeyName = reader["Constraint_Name"].ToString();
 
@@ -258,7 +258,7 @@ INNER JOIN (
 
                 while (reader.Read())
                 {
-                    var defaultConstraint = new DefaultConstraint()
+                    DefaultConstraint defaultConstraint = new DefaultConstraint()
                     {
                         ColumnDefault = reader["ColumnDefault"].ToString(),
                         ColumnName = reader["ColumnName"].ToString(),
@@ -345,7 +345,7 @@ ORDER BY OBJECT_SCHEMA_NAME(ind.object_id) --SchemaName
 
                 while (reader.Read())
                 {
-                    var index = new Constraint
+                    Constraint index = new Constraint
                     {
                         Name = reader["IndexName"].ToString(),
                         ConstraintType = reader["IndexType"].ToString(),
@@ -362,7 +362,7 @@ ORDER BY OBJECT_SCHEMA_NAME(ind.object_id) --SchemaName
                     }
 
 
-                    var column = new ConstraintColumn
+                    ConstraintColumn column = new ConstraintColumn
                     {
                         Name = reader["ColumnName"].ToString(),
                         Order = Convert.ToInt32(reader["ColumnOrder"].ToString()),

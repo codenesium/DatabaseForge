@@ -20,7 +20,7 @@ namespace Codenesium.DatabaseForgeLib.UserForms
         {
             this.Table = table;
             this._schema = schema;
-            InitializeComponent();
+            this.InitializeComponent();
             this.loadColumns();
             this.loadConstraints();
         }
@@ -59,21 +59,21 @@ namespace Codenesium.DatabaseForgeLib.UserForms
             this.checkBoxIsUnique.Checked = constraint.IsUnique;
             this.checkBoxIsPrimaryKey.Checked = constraint.IsPrimaryKey;
             this.comboBoxConstraintType.SelectedItem = constraint.ConstraintType;
-            if (listBoxConstraintColumns.Items.Count > 0)
+            if (this.listBoxConstraintColumns.Items.Count > 0)
             {
-                listBoxConstraintColumns.SelectedIndex = 0;
+                this.listBoxConstraintColumns.SelectedIndex = 0;
             }
             else
             {
-                listBoxConstraintColumns.SelectedIndex = -1;
+                this.listBoxConstraintColumns.SelectedIndex = -1;
             }
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            if (comboBoxConstraints.SelectedIndex > -1)
+            if (this.comboBoxConstraints.SelectedIndex > -1)
             {
-                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)comboBoxConstraints.SelectedItem;
+                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)this.comboBoxConstraints.SelectedItem;
                 if (this.comboBoxColumns.SelectedIndex > -1)
                 {
                     Column column = (Column)this.comboBoxColumns.SelectedItem;
@@ -86,14 +86,14 @@ namespace Codenesium.DatabaseForgeLib.UserForms
                     ConstraintColumn newColumn = new ConstraintColumn()
                     {
                         Name = column.Name,
-                        Order = listBoxConstraintColumns.Items.Count + 1,
+                        Order = this.listBoxConstraintColumns.Items.Count + 1,
                         Descending = false,
                         IsIncludedColumn = false
                     };
                     constraint.Columns.Add(newColumn);
                 }
                 this.selectConstraint(constraint);
-                listBoxConstraintColumns.SelectedIndex = -1;                
+                this.listBoxConstraintColumns.SelectedIndex = -1;                
             }
         }
 
@@ -111,24 +111,24 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 
         private void comboBoxConstraints_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxConstraints.SelectedIndex > -1)
+            if(this.comboBoxConstraints.SelectedIndex > -1)
             {
-                selectConstraint(comboBoxConstraints.SelectedItem as Codenesium.DatabaseContracts.Constraint);
+                this.selectConstraint(this.comboBoxConstraints.SelectedItem as Codenesium.DatabaseContracts.Constraint);
             }
             else
             {
-                listBoxConstraintColumns.DataSource = null;
+                this.listBoxConstraintColumns.DataSource = null;
             }
         }
 
         private void listBoxItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(listBoxConstraintColumns.SelectedIndex > -1)
+            if(this.listBoxConstraintColumns.SelectedIndex > -1)
             {
-                ConstraintColumn column = (ConstraintColumn)listBoxConstraintColumns.SelectedItem;
-                checkBoxDescending.Checked = column.Descending;
-                checkBoxIncludedColumn.Checked = column.IsIncludedColumn;
-                checkBoxIsIdentity.Checked = column.IsIdentity;
+                ConstraintColumn column = (ConstraintColumn)this.listBoxConstraintColumns.SelectedItem;
+                this.checkBoxDescending.Checked = column.Descending;
+                this.checkBoxIncludedColumn.Checked = column.IsIncludedColumn;
+                this.checkBoxIsIdentity.Checked = column.IsIdentity;
             }
         }
 
@@ -136,13 +136,13 @@ namespace Codenesium.DatabaseForgeLib.UserForms
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (listBoxConstraintColumns.SelectedIndex > -1)
+                if (this.listBoxConstraintColumns.SelectedIndex > -1)
                 {
-                    int index = listBoxConstraintColumns.IndexFromPoint(e.Location);
+                    int index = this.listBoxConstraintColumns.IndexFromPoint(e.Location);
                     if (index > -1)
                     {
-                        listBoxConstraintColumns.SelectedIndex = index;
-                        contextMenuStripColumns.Show(Cursor.Position);
+                        this.listBoxConstraintColumns.SelectedIndex = index;
+                        this.contextMenuStripColumns.Show(Cursor.Position);
                     }
                 }
             }
@@ -150,15 +150,15 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxConstraintColumns.SelectedIndex > -1)
+            if (this.listBoxConstraintColumns.SelectedIndex > -1)
             {
-                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)comboBoxConstraints.SelectedItem;
+                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)this.comboBoxConstraints.SelectedItem;
 
-                ConstraintColumn column = (ConstraintColumn)listBoxConstraintColumns.SelectedItem;
+                ConstraintColumn column = (ConstraintColumn)this.listBoxConstraintColumns.SelectedItem;
 
                 constraint.Columns.Remove(column);
-           
-                selectConstraint(constraint);
+
+                this.selectConstraint(constraint);
             }
         }
 
@@ -179,39 +179,39 @@ namespace Codenesium.DatabaseForgeLib.UserForms
                     Name = valueForm.Value,
                     SchemaName = this._schema,
                     TableName = this.Table.Name,
-                    ConstraintType = comboBoxConstraintType.Text
+                    ConstraintType = this.comboBoxConstraintType.Text
                 });
-                loadConstraints(this.Table.Constraints.Last());
+                this.loadConstraints(this.Table.Constraints.Last());
             }
         }
 
         private void checkBoxIsUnique_CheckedChanged(object sender, EventArgs e)
         {
-            if(comboBoxConstraints.SelectedIndex > -1)
+            if(this.comboBoxConstraints.SelectedIndex > -1)
             {
-                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)comboBoxConstraints.SelectedItem;
-                constraint.IsUnique = checkBoxIsUnique.Checked;
+                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)this.comboBoxConstraints.SelectedItem;
+                constraint.IsUnique = this.checkBoxIsUnique.Checked;
             }
         }
 
         private void checkBoxIsPrimaryKey_CheckedChanged(object sender, EventArgs e)
         {
-            if (comboBoxConstraints.SelectedIndex > -1)
+            if (this.comboBoxConstraints.SelectedIndex > -1)
             {
-                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)comboBoxConstraints.SelectedItem;
-                constraint.IsPrimaryKey = checkBoxIsPrimaryKey.Checked;
+                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)this.comboBoxConstraints.SelectedItem;
+                constraint.IsPrimaryKey = this.checkBoxIsPrimaryKey.Checked;
             }
         }
 
         private void checkBoxIsIdentity_CheckedChanged(object sender, EventArgs e)
         {
-            if (comboBoxConstraints.SelectedIndex > -1 && listBoxConstraintColumns.SelectedIndex > -1)
+            if (this.comboBoxConstraints.SelectedIndex > -1 && this.listBoxConstraintColumns.SelectedIndex > -1)
             {
-                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)comboBoxConstraints.SelectedItem;
+                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)this.comboBoxConstraints.SelectedItem;
 
-                var column = constraint.Columns.First(x => x.Name.ToUpper() == ((ConstraintColumn)(listBoxConstraintColumns.SelectedValue)).Name.ToUpper());
+                ConstraintColumn column = constraint.Columns.First(x => x.Name.ToUpper() == ((ConstraintColumn)(this.listBoxConstraintColumns.SelectedValue)).Name.ToUpper());
 
-                column.IsIdentity = checkBoxIsIdentity.Checked;
+                column.IsIdentity = this.checkBoxIsIdentity.Checked;
             }
         }
 
@@ -219,64 +219,64 @@ namespace Codenesium.DatabaseForgeLib.UserForms
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (comboBoxConstraints.SelectedIndex > -1)
+                if (this.comboBoxConstraints.SelectedIndex > -1)
                 {
-                     contextMenuStripConstraint.Show(Cursor.Position);
+                    this.contextMenuStripConstraint.Show(Cursor.Position);
                 }
             }
         }
 
         private void toolStripMenuItemDeleteConstraint_Click(object sender, EventArgs e)
         {
-            if (comboBoxConstraints.SelectedIndex > -1)
+            if (this.comboBoxConstraints.SelectedIndex > -1)
             {
-                this.Table.Constraints.Remove(comboBoxConstraints.SelectedItem as DatabaseContracts.Constraint);
-                loadConstraints();
-                clearControls();
+                this.Table.Constraints.Remove(this.comboBoxConstraints.SelectedItem as DatabaseContracts.Constraint);
+                this.loadConstraints();
+                this.clearControls();
             }
         }
 
         private void clearControls()
         {
-            checkBoxDescending.Checked = false;
-            checkBoxIsPrimaryKey.Checked = false;
-            checkBoxIsUnique.Checked = false;
-            checkBoxIsIdentity.Checked = false;
-            comboBoxColumns.SelectedIndex = -1;
-            checkBoxIncludedColumn.Checked = false;
-            loadColumns();
+            this.checkBoxDescending.Checked = false;
+            this.checkBoxIsPrimaryKey.Checked = false;
+            this.checkBoxIsUnique.Checked = false;
+            this.checkBoxIsIdentity.Checked = false;
+            this.comboBoxColumns.SelectedIndex = -1;
+            this.checkBoxIncludedColumn.Checked = false;
+            this.loadColumns();
         }
 
         private void comboBoxConstraintType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxConstraints.SelectedIndex > -1)
+            if (this.comboBoxConstraints.SelectedIndex > -1)
             {
-                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)comboBoxConstraints.SelectedItem;
-                constraint.ConstraintType = comboBoxConstraintType.Text;
+                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)this.comboBoxConstraints.SelectedItem;
+                constraint.ConstraintType = this.comboBoxConstraintType.Text;
             }
         }
 
         private void checkBoxDescending_CheckedChanged(object sender, EventArgs e)
         {
-            if (listBoxConstraintColumns.SelectedIndex > -1)
+            if (this.listBoxConstraintColumns.SelectedIndex > -1)
             {
-                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)comboBoxConstraints.SelectedItem;
+                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)this.comboBoxConstraints.SelectedItem;
 
-                ConstraintColumn column = (ConstraintColumn)listBoxConstraintColumns.SelectedItem;
+                ConstraintColumn column = (ConstraintColumn)this.listBoxConstraintColumns.SelectedItem;
 
-                column.Descending = checkBoxDescending.Checked;
+                column.Descending = this.checkBoxDescending.Checked;
             }
         }
 
         private void checkBoxIncludedColumn_CheckedChanged(object sender, EventArgs e)
         {
-            if (listBoxConstraintColumns.SelectedIndex > -1)
+            if (this.listBoxConstraintColumns.SelectedIndex > -1)
             {
-                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)comboBoxConstraints.SelectedItem;
+                Codenesium.DatabaseContracts.Constraint constraint = (Codenesium.DatabaseContracts.Constraint)this.comboBoxConstraints.SelectedItem;
 
-                ConstraintColumn column = (ConstraintColumn)listBoxConstraintColumns.SelectedItem;
+                ConstraintColumn column = (ConstraintColumn)this.listBoxConstraintColumns.SelectedItem;
 
-                column.IsIncludedColumn = checkBoxIncludedColumn.Checked;
+                column.IsIncludedColumn = this.checkBoxIncludedColumn.Checked;
             }
         }
     }

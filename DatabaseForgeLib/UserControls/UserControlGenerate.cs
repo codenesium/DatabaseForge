@@ -21,14 +21,14 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         public UserControlGenerate(ForgeSettings settings)
         {
             this._settings = settings;
-            InitializeComponent();
+            this.InitializeComponent();
           
         }
 
         public void Generate(DatabaseContainer database, ISQLGenerator generator)
         {
             this._database = database;
-            textBoxOutput.Text = generator.GenerateCreateDatabase(this._database);
+            this.textBoxOutput.Text = generator.GenerateCreateDatabase(this._database);
         }
 
       
@@ -36,7 +36,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         {
             ISQLGenerator generator = SqlGeneratorFactory.Factory(database.DatabaseType);
             this._database = database;
-            textBoxOutput.Text = generator.GenerateInsertStatmentsForDatabase(this._database);
+            this.textBoxOutput.Text = generator.GenerateInsertStatmentsForDatabase(this._database);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
               
             });
 
-            textBoxOutput.Text = output;
+            this.textBoxOutput.Text = output;
         }
 
         private void buttonGenerate_Click(object sender, EventArgs e)

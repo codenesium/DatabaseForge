@@ -20,8 +20,8 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         private string _originalName = string.Empty;
         public UserControlTableEntry()
         {
-            InitializeComponent();
-            textBoxTableName.Focus();
+            this.InitializeComponent();
+            this.textBoxTableName.Focus();
         }
 
         public void LoadTable(Table table, string schemaName)
@@ -29,7 +29,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             this.Table = table;
             this._schemaName = schemaName;
             this._originalName = table.Name;
-            PopulateForm(table);
+            this.PopulateForm(table);
             this.textBoxTableName.Select();
         }
 
@@ -40,16 +40,16 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         }
         private void Save()
         {
-            this.Table.Name = textBoxTableName.Text;
+            this.Table.Name = this.textBoxTableName.Text;
             this.TableSavedEvent(this, new TableSavedEventArgs(this.Table, this._originalName));
-            textBoxTableName.Clear();
+            this.textBoxTableName.Clear();
         }
 
         private void textBoxTableName_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!String.IsNullOrWhiteSpace(textBoxTableName.Text) &&  e.KeyChar == (char)Keys.Enter)
+            if (!String.IsNullOrWhiteSpace(this.textBoxTableName.Text) &&  e.KeyChar == (char)Keys.Enter)
             {
-                Save();
+                this.Save();
                 e.Handled = true;
             }
         }

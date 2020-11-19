@@ -18,14 +18,14 @@ namespace Codenesium.DatabaseForgeLib.UserForms
 
         public FormValueForm(string title, string fieldName)
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.labelValue.Text = fieldName;
             this.Text = title;
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            this.Value = textBoxValue.Text;
+            this.Value = this.textBoxValue.Text;
             this.Saved = true;
             this.Close();
         }

@@ -41,16 +41,16 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             {
                 this._database = database;
             }
-            InitializeComponent();
-            initializeControls();
-            loadSchemas(this._database);
+            this.InitializeComponent();
+            this.initializeControls();
+            this.loadSchemas(this._database);
         }
 
         private void initializeControls()
         {
-            listBoxColumns.DisplayMember = "Name";
-            listBoxTables.DisplayMember = "Name";
-            listBoxSchemas.DisplayMember = "Name";
+            this.listBoxColumns.DisplayMember = "Name";
+            this.listBoxTables.DisplayMember = "Name";
+            this.listBoxSchemas.DisplayMember = "Name";
 
             this.buttonCompleteSchemaEditing.Visible = this._settings.CodenesiumMode;
             this.buttonCancelSchemaEditing.Visible = this._settings.CodenesiumMode;
@@ -60,16 +60,16 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             this._userControlSchemaEntry.SchemaSavedEvent += (object sender, SchemaSavedEventArgs e) =>
             {
                 this._database.AddSchema(e.Schema, e.OriginalName);
-                loadSchemas(this._database);
+                this.loadSchemas(this._database);
             };
             this._userControlFieldRapidEntry.LoadForm();
 
             this._userControlFieldRapidEntry.ColumnSavedEvent += (object sender, ColumnSavedEventArgs e) =>
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
 
-                var existingField = table.Columns.FirstOrDefault(x => x.Name.ToUpper() == e.OriginalName.ToUpper());
+                Column existingField = table.Columns.FirstOrDefault(x => x.Name.ToUpper() == e.OriginalName.ToUpper());
                 schema.AddColumn(table.Name, e.Column, e.OriginalName);
 
                 if (existingField == null)
@@ -80,17 +80,17 @@ namespace Codenesium.DatabaseForgeLib.UserControls
                 {
                     this.tableSelectionChanged(true, false);
                 }
-                loadColumns(table.Columns);
+                this.loadColumns(table.Columns);
             };
             this._userControlFieldRapidEntry.ConstraintSavedEvent += (object sender, ConstraintSavedEventArgs e) =>
             {
-                var table = (Table)listBoxTables.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
                 table.AddConstraint(e.Constraint);
             };
             this._userControlFieldRapidEntry.ForeignKeySavedEvent += (object sender, ForeignKeySavedEventArgs e) =>
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
                 schema.AddForeignKey(e.Key);
                 table.AddConstraint(e.Constraint);
             };
@@ -98,29 +98,29 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             this._userControlTableEntry = new UserControlTableEntry();
             this._userControlTableEntry.TableSavedEvent += (object sender, TableSavedEventArgs e) =>
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
                 schema.AddTable(e.Table.Clone(), e.OriginalName);
-                loadTables(schema);
+                this.loadTables(schema);
             };
         }
 
         private void loadTables(Schema schema)
         {
-            populateForm(schema.Tables);
+            this.populateForm(schema.Tables);
         }
 
         private void populateForm(List<Table> tables, bool selectFirstTable = true)
         {
-            listBoxColumns.DataSource = null;
-            listBoxTables.DataSource = null;
-            listBoxTables.DataSource = tables.OrderBy(x => x.Name).ToList();
-            listBoxTables.DisplayMember = "Name";
+            this.listBoxColumns.DataSource = null;
+            this.listBoxTables.DataSource = null;
+            this.listBoxTables.DataSource = tables.OrderBy(x => x.Name).ToList();
+            this.listBoxTables.DisplayMember = "Name";
 
             if (selectFirstTable)
             {
-                if (listBoxTables.Items.Count > 0)
+                if (this.listBoxTables.Items.Count > 0)
                 {
-                    listBoxTables.SelectedIndex = 0;
+                    this.listBoxTables.SelectedIndex = 0;
                 }
             }
         }
@@ -148,44 +148,44 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void listBoxTables_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tableSelectionChanged();
+            this.tableSelectionChanged();
         }
 
         private void tableSelectionChanged(bool preserveFieldSelection = false, bool selectLast = false)
         {
-            int currentIndex = listBoxColumns.SelectedIndex;
-            if (listBoxTables.SelectedItem != null)
+            int currentIndex = this.listBoxColumns.SelectedIndex;
+            if (this.listBoxTables.SelectedItem != null)
             {
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
-                loadColumns(table.Columns);
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
+                this.loadColumns(table.Columns);
             }
 
-            if (preserveFieldSelection && currentIndex < listBoxColumns.Items.Count)
+            if (preserveFieldSelection && currentIndex < this.listBoxColumns.Items.Count)
             {
-                listBoxColumns.SelectedIndex = currentIndex;
+                this.listBoxColumns.SelectedIndex = currentIndex;
             }
 
             if (selectLast)
             {
-                listBoxColumns.SelectedIndex = listBoxColumns.Items.Count - 1;
+                this.listBoxColumns.SelectedIndex = this.listBoxColumns.Items.Count - 1;
             }
         }
 
         private void loadColumns(List<Column> columns)
         {
-            var table = (Table)listBoxTables.SelectedItem;
-            var schema = (Schema)listBoxSchemas.SelectedItem;
+            Table table = (Table)this.listBoxTables.SelectedItem;
+            Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
 
             this._userControlFieldRapidEntry.LoadForm();
 
-            listBoxColumns.DataSource = null;
-            listBoxColumns.DataSource = columns.OrderBy(x => x.Name).ToList().ToUIColumns(table, schema);
-            listBoxColumns.DisplayMember = "DisplayName";
+            this.listBoxColumns.DataSource = null;
+            this.listBoxColumns.DataSource = columns.OrderBy(x => x.Name).ToList().ToUIColumns(table, schema);
+            this.listBoxColumns.DisplayMember = "DisplayName";
 
-            if (listBoxColumns.Items.Count > 0)
+            if (this.listBoxColumns.Items.Count > 0)
             {
-                listBoxColumns.SelectedIndex = 0;
+                this.listBoxColumns.SelectedIndex = 0;
             }
         }
 
@@ -193,12 +193,12 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         {
             Action loadSchemas = () =>
             {
-                listBoxSchemas.DataSource = null;
-                listBoxSchemas.DataSource = database.Schemas;
-                listBoxSchemas.DisplayMember = "Name";
-                if (listBoxSchemas.Items.Count > 0)
+                this.listBoxSchemas.DataSource = null;
+                this.listBoxSchemas.DataSource = database.Schemas;
+                this.listBoxSchemas.DisplayMember = "Name";
+                if (this.listBoxSchemas.Items.Count > 0)
                 {
-                    listBoxSchemas.SelectedIndex = 0;
+                    this.listBoxSchemas.SelectedIndex = 0;
                 }
             };
 
@@ -222,28 +222,28 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void textBoxTableSearch_TextChanged(object sender, EventArgs e)
         {
-            if (listBoxSchemas.SelectedIndex > -1)
+            if (this.listBoxSchemas.SelectedIndex > -1)
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
-                filterTables(schema, textBoxTableSearch.Text);
-                textBoxTableSearch.Focus();
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
+                this.filterTables(schema, this.textBoxTableSearch.Text);
+                this.textBoxTableSearch.Focus();
             }
         }
 
         private void filterTables(Schema schema, string query)
         {
-            var filteredList = schema.Tables.Where(x => x.Name.ToUpper().StartsWith(query.ToUpper())).ToList();
-            populateForm(filteredList, false);
+            List<Table> filteredList = schema.Tables.Where(x => x.Name.ToUpper().StartsWith(query.ToUpper())).ToList();
+            this.populateForm(filteredList, false);
         }
 
         private void listBoxFields_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var table = (Table)listBoxTables.SelectedItem;
-            var schema = (Schema)listBoxSchemas.SelectedItem;
+            Table table = (Table)this.listBoxTables.SelectedItem;
+            Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
 
-            if (listBoxColumns.SelectedItem != null)
+            if (this.listBoxColumns.SelectedItem != null)
             {
-                var column = (Column)listBoxColumns.SelectedItem;
+                Column column = (Column)this.listBoxColumns.SelectedItem;
                 this._userControlFieldRapidEntry.LoadForm(schema.Clone(), table.Clone(), column.Clone());
                 this.setPanelUserControl(this._userControlFieldRapidEntry);
             }
@@ -259,11 +259,11 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void buttonAddFields_Click(object sender, EventArgs e)
         {
-            if (listBoxTables.SelectedIndex > -1)
+            if (this.listBoxTables.SelectedIndex > -1)
             {
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
-                listBoxColumns.SelectedIndex = -1;
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
+                this.listBoxColumns.SelectedIndex = -1;
                 this._userControlFieldRapidEntry.LoadForm(schema, table);
                 this.setPanelUserControl(this._userControlFieldRapidEntry);
             }
@@ -271,10 +271,10 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void buttonAddTable_Click(object sender, EventArgs e)
         {
-            if (listBoxSchemas.SelectedIndex > -1)
+            if (this.listBoxSchemas.SelectedIndex > -1)
             {
-                listBoxTables.SelectedIndex = -1;
-                listBoxColumns.SelectedIndex = -1;
+                this.listBoxTables.SelectedIndex = -1;
+                this.listBoxColumns.SelectedIndex = -1;
 
                 this.setPanelUserControl(this._userControlTableEntry);
             }
@@ -296,9 +296,9 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void SelectSchema()
         {
-            if (listBoxSchemas.SelectedIndex > -1)
+            if (this.listBoxSchemas.SelectedIndex > -1)
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
                 this.loadTables(schema);
             }
         }
@@ -307,13 +307,13 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (listBoxTables.SelectedIndex > -1)
+                if (this.listBoxTables.SelectedIndex > -1)
                 {
-                    int index = listBoxTables.IndexFromPoint(e.Location);
+                    int index = this.listBoxTables.IndexFromPoint(e.Location);
                     if (index > -1)
                     {
-                        listBoxTables.SelectedIndex = index;
-                        contextMenuStripTable.Show(Cursor.Position);
+                        this.listBoxTables.SelectedIndex = index;
+                        this.contextMenuStripTable.Show(Cursor.Position);
                     }
                 }
             }
@@ -323,26 +323,26 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (listBoxColumns.SelectedIndex > -1)
+                if (this.listBoxColumns.SelectedIndex > -1)
                 {
-                    int index = listBoxColumns.IndexFromPoint(e.Location);
+                    int index = this.listBoxColumns.IndexFromPoint(e.Location);
                     if (index > -1)
                     {
-                        listBoxColumns.SelectedIndex = index;
-                        var column = (Column)listBoxColumns.Items[index];
+                        this.listBoxColumns.SelectedIndex = index;
+                        Column column = (Column)this.listBoxColumns.Items[index];
 
-                        var table = (Table)listBoxTables.SelectedItem;
-                        var schema = (Schema)listBoxSchemas.SelectedItem;
+                        Table table = (Table)this.listBoxTables.SelectedItem;
+                        Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
 
                         if (table.Constraints.Any(x => x.IsPrimaryKey && x.TableName == table.Name))
                         {
-                            contextMenuAddPrimaryKey.Text = "Delete Primary Key";
+                            this.contextMenuAddPrimaryKey.Text = "Delete Primary Key";
                         }
                         else
                         {
-                            contextMenuAddPrimaryKey.Text = "Add Primary Key";
+                            this.contextMenuAddPrimaryKey.Text = "Add Primary Key";
                         }
-                        contextMenuAddPrimaryKey.Show(Cursor.Position);
+                        this.contextMenuAddPrimaryKey.Show(Cursor.Position);
                     }
                 }
             }
@@ -350,12 +350,12 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void createPrimaryKeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxColumns.SelectedIndex > -1)
+            if (this.listBoxColumns.SelectedIndex > -1)
             {
-                var column = (UIColumn)listBoxColumns.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
-                var primaryKey = new DatabaseContracts.Constraint()
+                UIColumn column = (UIColumn)this.listBoxColumns.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
+                DatabaseContracts.Constraint primaryKey = new DatabaseContracts.Constraint()
                 {
                     Name = $"PK_{table.Name}",
                     SchemaName = schema.Name,
@@ -393,21 +393,21 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void deleteFieldToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DeleteColumn();
+            this.DeleteColumn();
         }
 
         private void deleteFieldToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            DeleteColumn();
+            this.DeleteColumn();
         }
 
         private void DeleteColumn()
         {
-            if (listBoxColumns.SelectedIndex > -1)
+            if (this.listBoxColumns.SelectedIndex > -1)
             {
-                var column = (Column)listBoxColumns.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Column column = (Column)this.listBoxColumns.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
 
                 schema.DeleteColumn(table.Name, column.Name);
 
@@ -421,15 +421,15 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         public async Task SaveProject()
         {
-            saveFileDialogProject.FileName = "Project.json";
-            if (saveFileDialogProject.ShowDialog() == DialogResult.OK)
+            this.saveFileDialogProject.FileName = "Project.json";
+            if (this.saveFileDialogProject.ShowDialog() == DialogResult.OK)
             {
-                if (!String.IsNullOrWhiteSpace(saveFileDialogProject.FileName))
+                if (!String.IsNullOrWhiteSpace(this.saveFileDialogProject.FileName))
                 {
                     await Task.Run(() =>
                     {
                         string project = JsonConvert.SerializeObject(this._database, Formatting.Indented);
-                        File.WriteAllText(saveFileDialogProject.FileName, project);
+                        File.WriteAllText(this.saveFileDialogProject.FileName, project);
                     });
                 }
             }
@@ -437,17 +437,17 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         public async Task LoadProject()
         {
-            saveFileDialogProject.FileName = "Project.json";
-            if (openFileDialogProject.ShowDialog() == DialogResult.OK)
+            this.saveFileDialogProject.FileName = "Project.json";
+            if (this.openFileDialogProject.ShowDialog() == DialogResult.OK)
             {
-                if (!String.IsNullOrWhiteSpace(openFileDialogProject.FileName))
+                if (!String.IsNullOrWhiteSpace(this.openFileDialogProject.FileName))
                 {
                     await Task.Run(() =>
                     {
-                        string contents = File.ReadAllText(openFileDialogProject.FileName);
+                        string contents = File.ReadAllText(this.openFileDialogProject.FileName);
                         this._database = JsonConvert.DeserializeObject<DatabaseContainer>(contents);
                         this._userControlFieldRapidEntry.SetProvider(this._database.DatabaseType);
-                        loadSchemas(this._database);
+                        this.loadSchemas(this._database);
                     });
                 }
             }
@@ -457,20 +457,20 @@ namespace Codenesium.DatabaseForgeLib.UserControls
         {
             this.setPanelUserControl(this._userControlSchemaEntry);
             this._database = container;
-            listBoxColumns.DataSource = null;
-            listBoxTables.DataSource = null;
-            listBoxSchemas.DataSource = null;
+            this.listBoxColumns.DataSource = null;
+            this.listBoxTables.DataSource = null;
+            this.listBoxSchemas.DataSource = null;
             this._userControlFieldRapidEntry.SetProvider(this._database.DatabaseType);
-            loadSchemas(this._database);
+            this.loadSchemas(this._database);
         }
 
         private void createForeignKeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxColumns.SelectedIndex > -1)
+            if (this.listBoxColumns.SelectedIndex > -1)
             {
-                var column = (Column)listBoxColumns.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Column column = (Column)this.listBoxColumns.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
 
                 FormForeignKeyCreator keyCreator = new FormForeignKeyCreator(schema, table.Name, column.Name);
                 keyCreator.ShowDialog();
@@ -485,22 +485,22 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxTables.SelectedIndex > -1)
+            if (this.listBoxTables.SelectedIndex > -1)
             {
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
                 this._database.DeleteTable(schema.Name, table.Name);
-                loadTables(schema);
+                this.loadTables(schema);
             }
         }
 
         private void deleteForeignKeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxColumns.SelectedIndex > -1)
+            if (this.listBoxColumns.SelectedIndex > -1)
             {
-                var column = (Column)listBoxColumns.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Column column = (Column)this.listBoxColumns.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
 
                 schema.DeleteForeignKey(table.Name, column.Name);
 
@@ -530,16 +530,16 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void addIndexToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxTables.SelectedIndex > -1)
+            if (this.listBoxTables.SelectedIndex > -1)
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
                 FormIndexCreator formIndexCreator = new FormIndexCreator(table.Clone(), schema.Name);
                 formIndexCreator.ShowDialog();
                 if (formIndexCreator.Saved)
                 {
-                    var schemaIndex = this._database.Schemas.FindIndex(s => s.Name == schema.Name);
-                    var tableIndex = this._database.Schemas[schemaIndex].Tables.FindIndex(t => t.Name == table.Name);
+                    int schemaIndex = this._database.Schemas.FindIndex(s => s.Name == schema.Name);
+                    int tableIndex = this._database.Schemas[schemaIndex].Tables.FindIndex(t => t.Name == table.Name);
 
                     this._database.Schemas[schemaIndex].Tables[tableIndex] = formIndexCreator.Table.Clone();
                     this.loadTables(this._database.Schemas[schemaIndex]);
@@ -549,36 +549,36 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void contextMenuAddPrimaryKey_Opening(object sender, CancelEventArgs e)
         {
-            if (listBoxColumns.SelectedIndex > -1)
+            if (this.listBoxColumns.SelectedIndex > -1)
             {
-                var column = (UIColumn)listBoxColumns.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
+                UIColumn column = (UIColumn)this.listBoxColumns.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
 
                 if (column.IsForeignKey)
                 {
-                    createForeignKeyToolStripMenuItem.Visible = false;
-                    editForeignKeyToolStripMenuItem.Visible = true;
-                    deleteForeignKeyToolStripMenuItem.Visible = true;
+                    this.createForeignKeyToolStripMenuItem.Visible = false;
+                    this.editForeignKeyToolStripMenuItem.Visible = true;
+                    this.deleteForeignKeyToolStripMenuItem.Visible = true;
                 }
                 else
                 {
-                    createForeignKeyToolStripMenuItem.Visible = true;
-                    editForeignKeyToolStripMenuItem.Visible = false;
-                    deleteForeignKeyToolStripMenuItem.Visible = false;
+                    this.createForeignKeyToolStripMenuItem.Visible = true;
+                    this.editForeignKeyToolStripMenuItem.Visible = false;
+                    this.deleteForeignKeyToolStripMenuItem.Visible = false;
                 }
 
-                createPrimaryKeyToolStripMenuItem.Visible = false;
-                deletePrimaryKeyToolStripMenuItem.Visible = false;
+                this.createPrimaryKeyToolStripMenuItem.Visible = false;
+                this.deletePrimaryKeyToolStripMenuItem.Visible = false;
                 if (column.IsPrimaryKey)
                 {
-                    createPrimaryKeyToolStripMenuItem.Visible = false;
-                    deletePrimaryKeyToolStripMenuItem.Visible = true;
+                    this.createPrimaryKeyToolStripMenuItem.Visible = false;
+                    this.deletePrimaryKeyToolStripMenuItem.Visible = true;
                 }
                 else
                 {
                     if (!table.Constraints.Any(x => x.IsPrimaryKey))
                     {
-                        createPrimaryKeyToolStripMenuItem.Visible = true;
+                        this.createPrimaryKeyToolStripMenuItem.Visible = true;
                     }
                 }
             }
@@ -586,24 +586,24 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void deletePrimaryKeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxColumns.SelectedIndex > -1)
+            if (this.listBoxColumns.SelectedIndex > -1)
             {
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
                 this._database.DeletePrimaryKey(schema.Name, table.Name);
-                loadColumns(table.Columns);
+                this.loadColumns(table.Columns);
             }
         }
 
         private void editForeignKeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxColumns.SelectedIndex > -1)
+            if (this.listBoxColumns.SelectedIndex > -1)
             {
-                var column = (Column)listBoxColumns.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Column column = (Column)this.listBoxColumns.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
 
-                var foreignKey = schema.ForeignKeys.FirstOrDefault(x => x.Columns.Any(c =>
+                ForeignKey foreignKey = schema.ForeignKeys.FirstOrDefault(x => x.Columns.Any(c =>
                 c.ForeignKeyColumnName.ToUpper() == column.Name.ToUpper() &&
                 c.ForeignKeyTableName.ToUpper() == table.Name.ToUpper() &&
                 c.ForeignKeySchemaName.ToUpper() == schema.Name.ToUpper()
@@ -642,20 +642,20 @@ namespace Codenesium.DatabaseForgeLib.UserControls
             Button btnSender = (Button)sender;
             Point ptLowerLeft = new Point(0, btnSender.Height);
             ptLowerLeft = btnSender.PointToScreen(ptLowerLeft);
-            contextMenuStripTools.Show(ptLowerLeft);
+            this.contextMenuStripTools.Show(ptLowerLeft);
         }
 
         private void listBoxSchemas_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (listBoxSchemas.SelectedIndex > -1)
+                if (this.listBoxSchemas.SelectedIndex > -1)
                 {
-                    int index = listBoxSchemas.IndexFromPoint(e.Location);
+                    int index = this.listBoxSchemas.IndexFromPoint(e.Location);
                     if (index > -1)
                     {
-                        listBoxSchemas.SelectedIndex = index;
-                        contextMenuStripSchema.Show(Cursor.Position);
+                        this.listBoxSchemas.SelectedIndex = index;
+                        this.contextMenuStripSchema.Show(Cursor.Position);
                     }
                 }
             }
@@ -663,11 +663,11 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void toolStripMenuDeleteSchema_Click(object sender, EventArgs e)
         {
-            if (listBoxSchemas.SelectedIndex > -1)
+            if (this.listBoxSchemas.SelectedIndex > -1)
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
                 this._database.DeleteSchema(schema.Name);
-                loadSchemas(this._database);
+                this.loadSchemas(this._database);
             }
         }
 
@@ -713,7 +713,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void sQLServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var clonedDatabase = this._database.Clone();
+            DatabaseContainer clonedDatabase = this._database.Clone();
             clonedDatabase.TransformToMssql();
 
             this._userControlGenerate.Generate(clonedDatabase, SqlGeneratorFactory.Factory(DatabaseContainer.DatabaseTypeMSSQL));
@@ -722,7 +722,7 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void postgresToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var clonedDatabase = this._database.Clone();
+            DatabaseContainer clonedDatabase = this._database.Clone();
             clonedDatabase.TransformToPostgres();
 
             this._userControlGenerate.Generate(clonedDatabase, SqlGeneratorFactory.Factory(DatabaseContainer.DatabaseTypePostgreSQL));
@@ -743,10 +743,10 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void editTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxTables.SelectedIndex > -1)
+            if (this.listBoxTables.SelectedIndex > -1)
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
-                var table = (Table)listBoxTables.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
+                Table table = (Table)this.listBoxTables.SelectedItem;
 
                 this._userControlTableEntry.LoadTable(table, schema.Name);
                 this.setPanelUserControl(this._userControlTableEntry);
@@ -755,9 +755,9 @@ namespace Codenesium.DatabaseForgeLib.UserControls
 
         private void editSchemaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBoxSchemas.SelectedIndex > -1)
+            if (this.listBoxSchemas.SelectedIndex > -1)
             {
-                var schema = (Schema)listBoxSchemas.SelectedItem;
+                Schema schema = (Schema)this.listBoxSchemas.SelectedItem;
                 this._userControlSchemaEntry.LoadSchema(schema);
                 this.setPanelUserControl(this._userControlSchemaEntry);
             }

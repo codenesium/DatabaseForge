@@ -26,15 +26,15 @@ namespace Codenesium.DatabaseContracts
             }
             else
             {
-                foreach (var key in this.ForeignKeys)
+                foreach (ForeignKey key in this.ForeignKeys)
                 {
-                    var matchinForeignColumns = key.Columns.Where(x => x.ForeignKeySchemaName == this.Name && x.ForeignKeyTableName == originalName).ToList();
+                    List<ForeignKeyColumn> matchinForeignColumns = key.Columns.Where(x => x.ForeignKeySchemaName == this.Name && x.ForeignKeyTableName == originalName).ToList();
                     matchinForeignColumns.ForEach(fk =>
                     {
                         fk.ForeignKeyTableName = table.Name;
                     });
 
-                    var matchinPrimaryColumns = key.Columns.Where(x => x.PrimaryKeySchemaName == this.Name && x.PrimaryKeyTableName == originalName).ToList();
+                    List<ForeignKeyColumn> matchinPrimaryColumns = key.Columns.Where(x => x.PrimaryKeySchemaName == this.Name && x.PrimaryKeyTableName == originalName).ToList();
                     matchinPrimaryColumns.ForEach(fk =>
                     {
                         fk.PrimaryKeyTableName = table.Name;
@@ -46,7 +46,7 @@ namespace Codenesium.DatabaseContracts
 
         public virtual void AddColumn(string tableName, Column column, string originalName = "")
         {
-            var table = this.Tables.First(x => x.Name.ToUpper() == tableName.ToUpper());
+            Table table = this.Tables.First(x => x.Name.ToUpper() == tableName.ToUpper());
 
             if (string.IsNullOrWhiteSpace(originalName))
             {
@@ -55,12 +55,12 @@ namespace Codenesium.DatabaseContracts
             else
             {
 
-                var existingColumn = table.Columns.First(x => x.Name.ToUpper() == originalName.ToUpper());
+                Column existingColumn = table.Columns.First(x => x.Name.ToUpper() == originalName.ToUpper());
 
 
-                foreach (var key in this.ForeignKeys)
+                foreach (ForeignKey key in this.ForeignKeys)
                 {
-                    var matchinForeignColumns = key.Columns.Where(x => x.ForeignKeySchemaName == this.Name &&                 
+                    List<ForeignKeyColumn> matchinForeignColumns = key.Columns.Where(x => x.ForeignKeySchemaName == this.Name &&                 
                     x.ForeignKeyTableName == tableName &&
                     x.ForeignKeyColumnName == originalName).ToList();
 
@@ -69,7 +69,7 @@ namespace Codenesium.DatabaseContracts
                         fk.ForeignKeyColumnName = column.Name;
                     });
 
-                    var matchinPrimaryColumns = key.Columns.Where(x => x.PrimaryKeySchemaName == this.Name && 
+                    List<ForeignKeyColumn> matchinPrimaryColumns = key.Columns.Where(x => x.PrimaryKeySchemaName == this.Name && 
                     x.PrimaryKeyTableName == tableName &&
                     x.PrimaryKeyColumnName == originalName).ToList();
                     matchinPrimaryColumns.ForEach(fk =>
@@ -97,8 +97,8 @@ namespace Codenesium.DatabaseContracts
 
         public virtual void DeletePrimaryKey(string tableName)
         {
-            var table = this.Tables.First(x => x.Name == tableName);
-            var primaryKey = table.Constraints.FirstOrDefault(x => x.IsPrimaryKey);
+            Table table = this.Tables.First(x => x.Name == tableName);
+            Constraint primaryKey = table.Constraints.FirstOrDefault(x => x.IsPrimaryKey);
             if (primaryKey != null)
             {
                 // remove all foreign key references to this table
@@ -117,7 +117,7 @@ namespace Codenesium.DatabaseContracts
 
         public virtual void DeleteColumn(string tableName, string columnName)
         {
-            var table = this.Tables.First(x => x.Name == tableName);
+            Table table = this.Tables.First(x => x.Name == tableName);
 
             table.Columns.RemoveAll(x => x.Name == columnName);
 

@@ -56,10 +56,10 @@ namespace Codenesium.DatabaseContracts.DependencyResolver
                 {
 
                     // find all fields on the table that we reference
-                    var foreignKeyReferenceTable = tables.Where(x => x.Name == associatedForeignKey.Columns.First().PrimaryKeyTableName
+                    DependencyTable foreignKeyReferenceTable = tables.Where(x => x.Name == associatedForeignKey.Columns.First().PrimaryKeyTableName
                         && x.Schema == associatedForeignKey.Columns.First().PrimaryKeySchemaName).First();
 
-                    var primaryKey = foreignKeyReferenceTable.Columns.First(x => x.Name == associatedForeignKey.Columns.First().PrimaryKeyColumnName);
+                    DependencyColumn primaryKey = foreignKeyReferenceTable.Columns.First(x => x.Name == associatedForeignKey.Columns.First().PrimaryKeyColumnName);
 
                     column.SetRefersTo(primaryKey);
 
