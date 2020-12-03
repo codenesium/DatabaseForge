@@ -18,4 +18,8 @@
     <ProjectReference Include="..\DatabaseContracts\DatabaseContracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="dbschema\" />
+  </ItemGroup>
+
 </Project>
