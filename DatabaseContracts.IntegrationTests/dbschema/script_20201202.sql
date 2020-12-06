@@ -4,6 +4,9 @@ go
 use ForgeDB
 go
 
+set xact_abort on 
+begin tran
+
 IF NOT EXISTS(SELECT *
 FROM sys.schemas
 WHERE name = N'fge2')
@@ -166,10 +169,106 @@ GO
 ALTER TABLE[fge2].[users] CHECK CONSTRAINT[fk_users_usersid_users_id]
 GO
 
+--issue4
+CREATE TABLE fge2.complexKeyTable
+	(
+	IdA int NOT NULL,
+	IdB varchar(50) NOT NULL,
+	Description nchar(10) NOT NULL
+	)  ON [PRIMARY]
+GO
+
+ALTER TABLE fge2.complexKeyTable ADD CONSTRAINT
+	PK_complexKeyTable PRIMARY KEY CLUSTERED 
+	(
+	IdA,
+	IdB
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+ALTER TABLE fge2.complexKeyTable SET (LOCK_ESCALATION = TABLE)
+GO
+
+
+
+--issue5
+CREATE TABLE fge2.tableAX
+	(
+	Id1 int NOT NULL,
+	Id2 varchar(50) NOT NULL,
+	Description varchar(250) NOT NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE fge2.tableAX ADD CONSTRAINT
+	PK_tableAX PRIMARY KEY CLUSTERED 
+	(
+	Id1,
+	Id2
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+ALTER TABLE fge2.tableAX SET (LOCK_ESCALATION = TABLE)
+GO
+
+
+CREATE TABLE fge2.tableBX
+	(
+	Id int NOT NULL,
+	Description varchar(250) NOT NULL,
+	tableAXId1 int NOT NULL,
+	tableAXId2 varchar(50) NOT NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE fge2.tableBX ADD CONSTRAINT
+	PK_tableBX PRIMARY KEY CLUSTERED 
+	(
+	Id
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+ALTER TABLE fge2.tableBX ADD CONSTRAINT
+	FK_tableBX_tableAX FOREIGN KEY
+	(
+	tableAXId1,
+	tableAXId2
+	) REFERENCES fge2.tableAX
+	(
+	Id1,
+	Id2
+	) ON UPDATE  NO ACTION 
+	 ON DELETE  NO ACTION 
+	
+GO
+ALTER TABLE fge2.tableBX SET (LOCK_ESCALATION = TABLE)
+GO
+
+
+--issue6
+
+CREATE TABLE fge2.noPrimaryKeyTable
+	(
+	Code nchar(10) NULL,
+	Description nchar(10) NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE fge2.noPrimaryKeyTable SET (LOCK_ESCALATION = TABLE)
+GO
 
 
 
 
+--issue7
+create view fge2.testView
+
+as
+	select * from fge2.users
+
+go
+
+
+
+
+COMMIT
 
 -------------- USEFUL
 select * FROM sys.types order by name
