@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -195,7 +195,7 @@ INNER JOIN (
                 conn.Open();
                 SqlCommand command = new SqlCommand(query, conn);
 
-                command.CommandTimeout = 300;
+                command.CommandTimeout = 300 * 6;
 
                 SqlDataReader reader = command.ExecuteReader();
 
